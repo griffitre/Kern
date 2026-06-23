@@ -1,4 +1,5 @@
 #include "stack.h"
+#include <stddef.h>
 
 // Define a constant for stack size. Didn't define it in stack.h as nothing outside of this file needs to know the max stack size
 #define STACK_SIZE 256
