@@ -37,11 +37,14 @@ void telemetry_print(){
     // Calculate the difference
     clock_t elapsedTime = endTime - startTime;
 
+    // Convert it to a double
+    double elapsedConverted = (double)elapsedTime / CLOCKS_PER_SEC;
+
     // Print the number of cycles
     printf("Number of cycles: %d\n", cycles);
 
     // Print the elapsed time
-    printf("Elapsed time: %.4f seconds\n", elapsedTime);
+    printf("Elapsed time: %.4f seconds\n", elapsedConverted);
 
     // Call stack_depth to get the stack depth and print it
     int sDepth = stack_depth();
