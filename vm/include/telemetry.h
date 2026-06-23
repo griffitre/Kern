@@ -1,0 +1,12 @@
+#ifndef TELEMETRY_H
+#define TELEMETRY_H
+
+// Function headers
+// telemetry_init
+void telemetry_init();
+
+// telemetry_tick
+void telemetry_tick();
+
+// telemetry_print
+void telemetry_print();
