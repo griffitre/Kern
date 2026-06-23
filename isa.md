@@ -20,7 +20,7 @@ Each `.bin` file is a flat sequence of bytes. The VM will load the entire file i
 | ADD | 0x03 | - | a, b | a + b | Pops two values, pushes a + b |
 | SUB | 0x04 | - | a, b | b - a | Pops two values (a then b), pushes b - a |
 | MUL | 0x05 | - | a, b | a * b | Pops two values, pushes a * b |
-| DIV | 0x06 | - | a, b | b / a | Pops two values (a then b), pushes b / a |
+| DIV | 0x06 | - | a, b | b / a | Pops two values (a then b), pushes b / a. Integer division is used, so decimals are truncated |
 | STORE | 0x07 | addr | value | - | Pops top of stack and writes it to memory address |
 | LOAD | 0x08 | addr | - | value | Reads from memory address and pushes value onto stack |
 | JMP | 0x09 | addr | - | - | Sets program counter to addr |
