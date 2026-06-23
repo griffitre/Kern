@@ -10,3 +10,5 @@ void telemetry_tick();
 
 // telemetry_print
 void telemetry_print();
+
+#endif
