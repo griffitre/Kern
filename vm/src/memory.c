@@ -47,9 +47,17 @@ int memory_load(int addr, uint8_t *out){
 // Definition of memory_dump
 void memory_dump(){
 
-    // Just loop through the ram array and print every byte in hex format
+    // Just loop through the ram array and print every byte in hex format, adding a newline every 16 bytes
     for (int i = 0; i < RAM_SIZE; i++){
+
+        // Print a byte
         printf("%02X ", ram[i]);
+
+        // Check if a newline should be printed
+        if ((i + 1) % 16 == 0){
+            printf("\n");
+        }
+        
     }
 
 }
