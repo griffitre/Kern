@@ -1,3 +1,7 @@
+#include "telemetry.h"
+#include "memory.h"
+#include "stack.h"
+#include "vm.h"
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -38,9 +42,16 @@ int main(int argc, char *argv[]){
     // Use size to read from the file size times
     fread(buffer, 1, size, inFile);
 
-    // TODO: init memory, stack, telemetry
-    // TODO: vm_run(buffer, size)
-    // TODO: print telemtry
+    // Initialize memory, stack, and telemetry
+    memory_init();
+    stack_init();
+    telemetry_init();
+    
+    // Run the vm, pass the buffer and size of the buffer to it. Store the result to an int
+    int vmRunResult = vm_run(buffer, size);
+
+    // Run telemetry_print to display the stats
+    telemetry_print();
 
     // Free the buffer
     free(buffer);
@@ -48,6 +59,6 @@ int main(int argc, char *argv[]){
     // Close the file
     fclose(inFile);
 
-    // Return 0
-    return 0;
+    // Return the code that vm_run returned
+    return vmRunResult;
 }
