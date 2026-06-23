@@ -149,7 +149,7 @@ int vm_run(uint8_t *bytecode, long size){
                 pc++;
 
                 // Store the value to the address
-                if (memory_store(passedParameter, (uint8_t)value1) < 0){
+                if (memory_store((int)passedParameter, (uint8_t)value1) < 0){
                     return 1;
                 }
 
@@ -166,7 +166,7 @@ int vm_run(uint8_t *bytecode, long size){
                 pc++;
 
                 // Load the value from the address
-                if (memory_load(passedParameter, &loadedValue) < 0){
+                if (memory_load((int)passedParameter, &loadedValue) < 0){
                     return 1;
                 }
 

@@ -14,7 +14,7 @@ void memory_init(){
 }
 
 // Definition of memory_store
-int memory_store(uint8_t addr, uint8_t value){
+int memory_store(int addr, uint8_t value){
 
     // Do a bounds check first, return -1 if out of bounds
     if (addr >= RAM_SIZE){
@@ -30,7 +30,7 @@ int memory_store(uint8_t addr, uint8_t value){
 }
 
 // Definition of memory_load
-int memory_load(uint8_t addr, uint8_t *out){
+int memory_load(int addr, uint8_t *out){
 
     // Do a bounds check first, return -1 if out of bounds
     if (addr >= RAM_SIZE){

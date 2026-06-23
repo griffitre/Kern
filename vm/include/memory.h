@@ -12,10 +12,10 @@
 void memory_init();
 
 // memory_store
-int memory_store(uint8_t addr, uint8_t value);
+int memory_store(int addr, uint8_t value);
 
 // memory_load
-int memory_load(uint8_t addr, uint8_t *out);
+int memory_load(int addr, uint8_t *out);
 
 // memory_dump
 void memory_dump();
