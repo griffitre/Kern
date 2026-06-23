@@ -1,0 +1,14 @@
+#ifndef ERRORS_H
+#define ERRORS_H
+
+typedef enum {
+    KERN_OK = 0;
+    KERN_ERR_STACKOVERFLOW,
+    KERN_ERR_STACKUNDERFLOW,
+    KERN_ERR_OOB_MEMORY,
+    KERN_ERR_OOB_PC,
+    KERN_ERR_INVALID_OPCODE,
+    KERN_ERR_DIV_ZERO
+} KernError;
+
+#endif
