@@ -1,5 +1,6 @@
 #include "memory.h"
 #include <string.h>
+#include <stdio.h>
 
 // Define the ram array
 static uint8_t ram[256];
