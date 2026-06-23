@@ -15,7 +15,7 @@ void memory_init();
 int memory_store(uint8_t addr, uint8_t value);
 
 // memory_load
-int memory_load(uint8_t addr);
+int memory_load(uint8_t addr, uint8_t *out);
 
 // memory_dump
 void memory_dump();

@@ -29,15 +29,17 @@ int memory_store(uint8_t addr, uint8_t value){
 }
 
 // Definition of memory_load
-int memory_load(uint8_t addr){
+int memory_load(uint8_t addr, uint8_t *out){
 
     // Do a bounds check first, return -1 if out of bounds
     if (addr >= RAM_SIZE){
         return -1;
     }
 
-    // Then, load the value from the address
-    return ram[addr];
+    // Then, load the value from the address into the out pointer
+    *out = ram[addr];
+
+    return 0;
 
 }
 
