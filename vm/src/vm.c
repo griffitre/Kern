@@ -224,7 +224,7 @@ int vm_run(uint8_t *bytecode, long size){
                 }
 
                 // Print it to stdout
-                fprintf(stdout, "%d ", value1);
+                fprintf(stdout, "%d\n", value1);
 
                 // Break
                 break;
