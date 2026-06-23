@@ -1,6 +1,6 @@
 # Define variables
 CC = gcc
-CFLAGS = -Wall -Wextra -I vm/src
+CFLAGS = -Wall -Wextra -I vm/include
 
 # Ensure required directories exist
 $(shell mkdir -p vm/obj vm/bin)
