@@ -40,3 +40,13 @@ int memory_load(uint8_t addr){
     return ram[addr];
 
 }
+
+// Definition of memory_dump
+void memory_dump(){
+
+    // Just loop through the ram array and print every byte in hex format
+    for (int i = 0; i < RAM_SIZE; i++){
+        printf("%02X ", ram[i]);
+    }
+
+}
