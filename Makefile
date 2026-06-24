@@ -10,8 +10,8 @@ build: vm/obj/main.o vm/obj/vm.o vm/obj/memory.o vm/obj/stack.o vm/obj/telemetry
 	$(CC) $(CFLAGS) vm/obj/main.o vm/obj/vm.o vm/obj/memory.o vm/obj/stack.o vm/obj/telemetry.o -o vm/bin/kern
 
 # Command to build the test file
-test: vm/obj/vm.o vm/obj/memory.o vm/obj/stack.o vm/obj/telemetry.o vm/obj/testVM.o
-	$(CC) $(CFLAGS) vm/obj/vm.o vm/obj/memory.o vm/obj/stack.o vm/obj/telemetry.o vm/obj/testVM.o -o vm/bin/tests -lcheck -lm -lsubunit -lrt -lpthread
+test: vm/obj/vm.o vm/obj/memory.o vm/obj/stack.o vm/obj/telemetry.o vm/obj/negativeTests.o vm/obj/positiveTests.o vm/obj/testMain.o
+	$(CC) $(CFLAGS) vm/obj/vm.o vm/obj/memory.o vm/obj/stack.o vm/obj/telemetry.o vm/obj/negativeTests.o vm/obj/positiveTests.o vm/obj/testMain.o -o vm/bin/tests -lcheck -lm -lsubunit -lrt -lpthread
 
 # Commands to build each object file
 vm/obj/main.o: vm/src/main.c
@@ -29,8 +29,14 @@ vm/obj/stack.o: vm/src/stack.c
 vm/obj/telemetry.o: vm/src/telemetry.c
 	$(CC) $(CFLAGS) vm/src/telemetry.c -c -o vm/obj/telemetry.o
 
-vm/obj/testVM.o: vm/tests/testVM.c
-	$(CC) $(CFLAGS) vm/tests/testVM.c -c -o vm/obj/testVM.o
+vm/obj/negativeTests.o: vm/tests/negativeTests.c
+	$(CC) $(CFLAGS) vm/tests/negativeTests.c -c -o vm/obj/negativeTests.o
+
+vm/obj/positiveTests.o: vm/tests/positiveTests.c
+	$(CC) $(CFLAGS) vm/tests/positiveTests.c -c -o vm/obj/positiveTests.o
+
+vm/obj/testMain.o: vm/tests/testMain.c
+	$(CC) $(CFLAGS) vm/tests/testMain.c -c -o vm/obj/testMain.o
 
 # Command to remove all object files and executables
 clean:
