@@ -2,7 +2,7 @@
 #define ERRORS_H
 
 typedef enum {
-    KERN_OK = 0;
+    KERN_OK = 0,
     KERN_ERR_STACKOVERFLOW,
     KERN_ERR_STACKUNDERFLOW,
     KERN_ERR_OOB_MEMORY,
