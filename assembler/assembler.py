@@ -1,7 +1,20 @@
 import sys
 
-# Opcode lookup table (TODO)
-opcodes = {}
+# Opcode lookup table
+opcodes = {
+    "PUSH": 0x01,
+    "POP": 0x02,
+    "ADD": 0x03,
+    "SUB": 0x04,
+    "MUL": 0x05,
+    "DIV": 0x06,
+    "STORE": 0x07,
+    "LOAD": 0x08,
+    "JMP": 0x09,
+    "JMP_IF_ZERO": 0x0A,
+    "PRINT": 0x0B,
+    "HALT": 0xFF
+}
 
 # Symbol table for labels (TODO)
 symbols = {}
@@ -13,7 +26,6 @@ def tokenize(source):
     lines = source.split("\n")
 
     # Create a list to store the tokenized command lists and a list to construct the tokenized command lists that will be sent to returnList
-    # I know you dont have to do this in python but doing this helps me plan it/map it out easier
     returnList = []
     loopList = []
 
@@ -29,6 +41,9 @@ def tokenize(source):
         # Ensure that there is actually content on said line. If not, skip over the rest of this loop
         if not line:
             continue
+
+        # Make the string all uppercase to remove case-sensitivity
+        line = line.upper()
         
         # Split the stripped line using split and store to loopList
         loopList = line.split()
