@@ -4,7 +4,7 @@
 #include "telemetry.h"
 #include "opcodes.h"
 #include "errors.h"
-#include <check.h>
+#include "negativeTests.h"
 #include <stdlib.h>
 
 // Setup function. Just initializes memory, stack, and telemetry
@@ -131,10 +131,10 @@ START_TEST(test_div_zero){
 
 
 // Create the test suite
-Suite *vmSuite(){
+Suite *negativeSuite(){
 
     // Define the suite and tc
-    Suite *s = suite_create("VM");
+    Suite *s = suite_create("Negative");
     TCase *tc = tcase_create("Main");
 
     // Register the setup and teardown functions to run before/after every test
