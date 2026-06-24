@@ -9,6 +9,10 @@ $(shell mkdir -p vm/obj vm/bin)
 build: vm/obj/main.o vm/obj/vm.o vm/obj/memory.o vm/obj/stack.o vm/obj/telemetry.o
 	$(CC) $(CFLAGS) vm/obj/main.o vm/obj/vm.o vm/obj/memory.o vm/obj/stack.o vm/obj/telemetry.o -o vm/bin/kern
 
+# Command to build the test file
+test: vm/obj/vm.o vm/obj/memory.o vm/obj/stack.o vm/obj/telemetry.o vm/obj/testVM.o
+	$(CC) $(CFLAGS) vm/obj/vm.o vm/obj/memory.o vm/obj/stack.o vm/obj/telemetry.o vm/obj/testVM.o -o vm/bin/tests -lcheck -lm -lsubunit -lrt -lpthread
+
 # Commands to build each object file
 vm/obj/main.o: vm/src/main.c
 	$(CC) $(CFLAGS) vm/src/main.c -c -o vm/obj/main.o
@@ -24,6 +28,9 @@ vm/obj/stack.o: vm/src/stack.c
 
 vm/obj/telemetry.o: vm/src/telemetry.c
 	$(CC) $(CFLAGS) vm/src/telemetry.c -c -o vm/obj/telemetry.o
+
+vm/obj/testVM.o: vm/tests/testVM.c
+	$(CC) $(CFLAGS) vm/tests/testVM.c -c -o vm/obj/testVM.o
 
 # Command to remove all object files and executables
 clean:
