@@ -1,3 +1,4 @@
 vm/bin/
 vm/obj/
 .vs
+.vscode
