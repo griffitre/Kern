@@ -8,14 +8,14 @@
 #include <stdlib.h>
 
 // Setup function. Just initializes memory, stack, and telemetry
-void setup(){
+void setupPositive(){
     memory_init();
     stack_init();
     telemetry_init();
 }
 
 // Teardown function
-void teardown(){
+void teardownPositive(){
     // Nothing is needed for this as the setup function handles resetting (tearing down) everything that needs to be reset
 }
 
@@ -163,7 +163,7 @@ Suite *positiveSuite(){
     TCase *tc = tcase_create("Main");
 
     // Register the setup and teardown functions to run before/after every test
-    tcase_add_checked_fixture(tc, setup, teardown);
+    tcase_add_checked_fixture(tc, setupPositive, teardownPositive);
 
     // Add tests
     tcase_add_test(tc, test_store_load_roundtrip);
