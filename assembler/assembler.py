@@ -16,7 +16,10 @@ opcodes = {
     "HALT": 0xFF
 }
 
-# Symbol table for labels (TODO)
+# A set that keeps track of which opcodes have operands. Used for first pass calculating the location of labels for jump operations
+operand_opcodes = {"PUSH", "STORE", "LOAD", "JMP", "JMP_IF_ZERO"}
+
+# Symbol table for labels
 symbols = {}
 
 # Function to tokenize
@@ -56,7 +59,31 @@ def tokenize(source):
 
 # Function to find labels
 def first_pass(tokens):
-    pass #(TODO)
+    
+    # Int to store total byte count
+    byteSum = 0
+
+    # Loop through the passed tokens list
+    for token in tokens:
+
+        # If the token is a label (i.e. has a : in it), add it to the dict with current bytesum value
+        if token[0].endswith(":"):
+
+            # Strip the colon
+            labelName = token[0][:-1]
+
+            # Store to symbols
+            symbols[labelName] = byteSum
+
+            # Skip over the remaining loop
+            continue
+        
+        # Check if the token is in the opcodes with an operand, and increase byteSum accordingly
+        if token[0] in operand_opcodes:
+            byteSum += 2
+        else:
+            byteSum += 1
+
 
 # Function to emit bytes (opcode/operands)
 def second_pass(tokens):
