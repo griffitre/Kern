@@ -8,7 +8,36 @@ symbols = {}
 
 # Function to tokenize
 def tokenize(source):
-    pass #(TODO)
+
+    # Split the source by newlines
+    lines = source.split("\n")
+
+    # Create a list to store the tokenized command lists and a list to construct the tokenized command lists that will be sent to returnList
+    # I know you dont have to do this in python but doing this helps me plan it/map it out easier
+    returnList = []
+    loopList = []
+
+    # Loop through the lines list
+    for line in lines:
+
+        # Strip comments
+        line = line.split(";")[0]
+        
+        # Strip leading and trailing whitespace
+        line = line.strip()
+
+        # Ensure that there is actually content on said line. If not, skip over the rest of this loop
+        if not line:
+            continue
+        
+        # Split the stripped line using split and store to loopList
+        loopList = line.split()
+
+        # Add loop list to returnList
+        returnList.append(loopList)
+
+    # Return returnList
+    return returnList
 
 # Function to find labels
 def first_pass(tokens):
