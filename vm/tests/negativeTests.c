@@ -158,25 +158,3 @@ Suite *vmSuite(){
     return s;
 
 }
-
-// Main runner
-int main(){
-
-    // Create an instance of vmSuite
-    Suite *s = vmSuite();
-
-    // Create a suite runner to run the instance
-    SRunner *sr = srunner_create(s);
-
-    // Run the suite runner
-    srunner_run_all(sr, CK_NORMAL);
-
-    // Get the number of failed tests
-    int failed = srunner_ntests_failed(sr);
-
-    // Free the runner
-    srunner_free(sr);
-
-    // Return 0 if no tests failed and 1 if any tests failed
-    return failed == 0 ? 0 : 1;
-}
