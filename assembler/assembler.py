@@ -84,10 +84,62 @@ def first_pass(tokens):
         else:
             byteSum += 1
 
-
-# Function to emit bytes (opcode/operands)
+# Function to emit bytes (converted opcode/operands)
 def second_pass(tokens):
-    pass #(TODO)
+    
+    # Create a list to store the converted opcode
+    returnList = []
+
+    # Go through the passed tokens array and convert everything that can/should be converted
+    for token in tokens:
+
+        # Check if the token is a label, skip over it if so
+        if token[0].endswith(":"):
+            continue
+
+        # Check if opcode is unrecognized
+        if (token[0] not in opcodes):
+            print("Unrecognized opcode: " + token[0])
+            sys.exit(1)
+
+        # Checks involving opcodes that need operands
+        if token[0] in operand_opcodes:
+
+            # Check if an operand is not given
+            if len(token) == 1:
+                print("Operand not given for opcode: " + token[0])
+                sys.exit(1)
+
+            # Check if an operand is greater than 255
+            if token[1].isdigit() and int(token[1]) > 255:
+                print("Operand value should not be greater than 255")
+                sys.exit(1)
+
+        # Convert the bytes
+        # For opcode with no operand, just convert it to the bytes and add it to returnList
+        if len(token) == 1:
+            returnList.append(opcodes[token[0]])
+
+        # For opcode that needs an operand, convert it and then convert the operand (convert the operand if needed, like if its a label)
+        elif len(token) == 2:
+
+            # Check if the operand is a label. If it is, convert it and add the operand and the converted value to returnList
+            if token[1] in symbols:
+                returnList.append(opcodes[token[0]])
+                returnList.append(symbols[token[1]])
+
+            # Otherwise, just add the converted opcode and the value
+            else:
+                returnList.append(opcodes[token[0]])
+                returnList.append(int(token[1]))
+
+        # Otherwise, inform that they cant have more than 1 opcode and 1 operand per line
+        else:
+            print("No more than 1 opcode and 1 operand per line")
+            sys.exit(1)
+
+    # Return the list
+    return returnList
 
 # Function to convert the list of emitted bytes to a .bin file for the VM
 def write_bin(bytecode, outputPath):
