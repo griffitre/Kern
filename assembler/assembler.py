@@ -131,7 +131,14 @@ def second_pass(tokens):
             # Otherwise, just add the converted opcode and the value
             else:
                 returnList.append(opcodes[token[0]])
-                returnList.append(int(token[1]))
+
+                # Try to convert the token to an int. This is under a try statement so that if a label isnt found in symbols and it falls through to here, the ValueError is caught
+                # Also it allows me to exit the program if the label isnt defined anywhere
+                try:
+                    returnList.append(int(token[1]))
+                except ValueError:
+                    print("Unknown label or opcode: " + token[1])
+                    sys.exit(1)
 
         # Otherwise, inform that they cant have more than 1 opcode and 1 operand per line
         else:
@@ -160,9 +167,16 @@ def main():
     if not passedName.endswith(".krn"):
         sys.exit(1)
     
-    # Open + read the file
-    with open(passedName, "r") as inFile:
-        fileContent = inFile.read()
+    # Try to open the file
+    try:
+        # Open + read the file
+        with open(passedName, "r") as inFile:
+            fileContent = inFile.read()
+        
+    # If the file is not found, exit
+    except FileNotFoundError:
+        print("Error: file " + passedName + " not found")
+        sys.exit(1)
 
     # TODO: tokenize
 
