@@ -143,7 +143,8 @@ def second_pass(tokens):
 
 # Function to convert the list of emitted bytes to a .bin file for the VM
 def write_bin(bytecode, outputPath):
-    pass #(TODO)
+    with open(outputPath, "wb") as outFile:
+        outFile.write(bytes(bytecode))
 
 def main():
 
@@ -172,7 +173,6 @@ def main():
     # TODO: write bin
 
     
-
 # If name = main, run main
 if __name__ == "__main__":
     main()
