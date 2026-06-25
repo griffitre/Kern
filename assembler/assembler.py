@@ -153,6 +153,7 @@ def write_bin(bytecode, outputPath):
     with open(outputPath, "wb") as outFile:
         outFile.write(bytes(bytecode))
 
+# Main function
 def main():
 
     # Ensure that a file was passed. If not, exit
@@ -178,13 +179,20 @@ def main():
         print("Error: file " + passedName + " not found")
         sys.exit(1)
 
-    # TODO: tokenize
+    # Tokenize the file content
+    tokens = tokenize(fileContent)
 
-    # TODO: first pass
+    # Run first pass with the tokenized content list
+    first_pass(tokens)
 
-    # TODO: second pass
+    # Run second pass with the tokenized content list and store the output
+    bytecode = second_pass(tokens)
 
-    # TODO: write bin
+    # Create the output path
+    outputPath = passedName.replace(".krn", ".bin")
+
+    # Write the binary file
+    write_bin(bytecode, outputPath)
 
     
 # If name = main, run main
