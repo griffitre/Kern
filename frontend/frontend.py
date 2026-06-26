@@ -90,11 +90,13 @@ def show_results(stdscr, filePath, printOutput, telemetryOutput, returnCode):
     machineOutputHeader = "----MACHINE OUTPUT----"
     machineOutputStart = 4 + panelHeight + 1
     pad.addstr(machineOutputStart, width // 2 - len(machineOutputHeader) // 2, machineOutputHeader)
-    pad.addstr(machineOutputStart + 1, 2, printOutput)
+    printLines = printOutput.split("\n")
+    for i, line in enumerate(printLines):
+        pad.addstr(machineOutputStart + 1 + i, 2, line)
 
     # Ram dump starts after machine output
     ramHeader = "----RAM DUMP----"
-    ramStart = machineOutputStart + 3
+    ramStart = machineOutputStart + 2 + len(printLines)
     pad.addstr(ramStart, width // 2 - len(ramHeader) // 2, ramHeader)
     for i, line in enumerate(ramDump):
         pad.addstr(ramStart + 1 + i, 2, line)
