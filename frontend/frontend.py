@@ -24,11 +24,16 @@ def show_results(stdscr, filePath, printOutput, telemetryOutput, returnCode):
     width = min(width, 120)
 
     # Check terminal dimensions
-    if height < 40 or width < 120:
-        stdscr.addstr(0, 0, f"Terminal too small ({width}x{height}). Please resize to at least 120 columns by 40 rows.")
+    while True:
+        curses.resizeterm(height, width)
+        height, width = stdscr.getmaxyx()
+        width = min(width, 120)
+        if height >= 20 and width >= 120:
+            break
+        stdscr.clear()
+        stdscr.addstr(0, 0, f"Terminal too small ({width}x{height}). Please resize to at least 120 columns by 20 rows.")
         stdscr.refresh()
-        stdscr.getch()
-        return
+        curses.napms(500)
 
     # Clear the screen
     stdscr.clear()
@@ -130,11 +135,16 @@ def show_assembly_error(stdscr, filePath, errorMessage):
     width = min(width, 120)
 
     # Check terminal dimensions
-    if height < 40 or width < 120:
+    while True:
+        curses.resizeterm(height, width)
+        height, width = stdscr.getmaxyx()
+        width = min(width, 120)
+        if height >= 20 and width >= 120:
+            break
+        stdscr.clear()
         stdscr.addstr(0, 0, f"Terminal too small ({width}x{height}). Please resize to at least 120 columns by 40 rows.")
         stdscr.refresh()
-        stdscr.getch()
-        return
+        curses.napms(500)
     
     # Clear the screen
     stdscr.clear()
@@ -150,11 +160,14 @@ def show_assembly_error(stdscr, filePath, errorMessage):
     stdscr.addstr(4, 2, errorMessage)
 
     # Draw hint
-    stdscr.addstr(6, 2, "Press any key to exit")
+    stdscr.addstr(6, 2, "Press enter to exit")
 
     # Refresh screen and wait for the next keypress
     stdscr.refresh()
-    stdscr.getch()
+    while True:
+        key = stdscr.getch()
+        if key in [10, 13, curses.KEY_ENTER]:
+            break
 
 # Helper function to parse the telemetry output
 def parse_telemetry(telemetryOutput):
@@ -229,84 +242,100 @@ def wrap_text(text, maxWidth, startCol):
 # Main
 def main(stdscr):
 
-    # Clear screen
-    stdscr.clear()
+    # Wrap all code in a try so when the window is resized, it doesnt crash
+    try:
+        # Clear screen
+        stdscr.clear()
 
-    #Get terminal dimensions
-    height, width = stdscr.getmaxyx()
+        #Get terminal dimensions
+        height, width = stdscr.getmaxyx()
 
-    # Set the max window width
-    width = min(width, 120)
+        # Set the max window width
+        width = min(width, 120)
 
-    # Check terminal dimensions
-    if height < 40 or width < 120:
-        stdscr.addstr(0, 0, f"Terminal too small ({width}x{height}). Please resize to at least 120 columns by 40 rows.")
+        # Check terminal dimensions
+        while True:
+            curses.resizeterm(height, width)
+            height, width = stdscr.getmaxyx()
+            width = min(width, 120)
+            if height >= 20 and width >= 120:
+                break
+            stdscr.clear()
+            stdscr.addstr(0, 0, f"Terminal too small ({width}x{height}). Please resize to at least 120 columns by 40 rows.")
+            stdscr.refresh()
+            curses.napms(500)
+
+        # Draw title in the center
+        title = "KERN"
+        stdscr.addstr(0, width // 2 - len(title) // 2, title)
+
+        # Draw input box
+        rectangle(stdscr, 3, 2, 5, width - 2)
+
+        # Create input window inside the box
+        inputWin = curses.newwin(1, width - 6, 4, 4)
+
+        # Draw prompt
+        prompt = "Enter .krn file path:"
+        stdscr.addstr(2, 2, prompt)
+
+        # Draw hint
+        hint = "Press Enter to run"
+        stdscr.addstr(6, 2, hint)
+
+        # Refresh screen
         stdscr.refresh()
-        stdscr.getch()
-        return
 
-    # Draw title in the center
-    title = "KERN"
-    stdscr.addstr(0, width // 2 - len(title) // 2, title)
+        # Get input
+        box = Textbox(inputWin)
+        box.edit(enterSubmit)
+        filePath = box.gather().strip()
 
-    # Draw input box
-    rectangle(stdscr, 3, 2, 5, width - 2)
+        # Run the assembler
+        assemblerResult = subprocess.run(["python3", "assembler/src/assembler.py", filePath], capture_output=True, text=True)
 
-    # Create input window inside the box
-    inputWin = curses.newwin(1, width - 6, 4, 4)
+        # Check if the assembler failed or if it succeeded
+        # Failed, show the error screen
+        if assemblerResult.returncode != 0:
+            show_assembly_error(stdscr, filePath, assemblerResult.stdout)
 
-    # Draw prompt
-    prompt = "Enter .krn file path:"
-    stdscr.addstr(2, 2, prompt)
-
-    # Draw hint
-    hint = "Press Enter to run"
-    stdscr.addstr(6, 2, hint)
-
-    # Refresh screen
-    stdscr.refresh()
-
-    # Get input
-    box = Textbox(inputWin)
-    box.edit(enterSubmit)
-    filePath = box.gather().strip()
-
-    # Run the assembler
-    assemblerResult = subprocess.run(["python3", "assembler/src/assembler.py", filePath], capture_output=True, text=True)
-
-    # Check if the assembler failed or if it succeeded
-    # Failed, show the error screen
-    if assemblerResult.returncode != 0:
-        show_assembly_error(stdscr, filePath, assemblerResult.stdout)
-
-    # Succeeeded, run the vm
-    else:
-        
-        # Derive the .bin path from the .krn path
-        binPath = filePath.replace(".krn", ".bin")
-
-        # Run the VM with the binPath
-        vmResult = subprocess.run(["./vm/bin/kern", binPath], capture_output=True, text=True)
-
-        # Split stdout into the PRINT instruction output and the telemetry output
-        parts = vmResult.stdout.split("----TELEMETRY----\n")
-
-        # Get the print output and strip leading/trailing whitespace (if there was any)
-        if parts[0].strip() != "":
-            printOutput = parts[0].strip()
+        # Succeeeded, run the vm
         else:
-            printOutput = "(No output)"
+            
+            # Derive the .bin path from the .krn path
+            binPath = filePath.replace(".krn", ".bin")
 
-        # Get the telemetry output and strip leading/trailing whitespace, as long as it didnt crash (which it shouldn't, im just including this for safety reasons)
-        if len(parts) > 1:
-            telemetryOutput = parts[1].strip()
+            # Run the VM with the binPath
+            vmResult = subprocess.run(["./vm/bin/kern", binPath], capture_output=True, text=True)
 
-        # If it did crash, inform the user by setting telemetryOutput to "VM CRASHED"
-        else:
-            telemetryOutput = "VM CRASHED BEFORE TELEMETRY COULD BE PRINTED"
-        
-        # Run the show_results function with the respective return code
-        show_results(stdscr, filePath, printOutput, telemetryOutput, vmResult.returncode)
+            # Split stdout into the PRINT instruction output and the telemetry output
+            parts = vmResult.stdout.split("----TELEMETRY----\n")
+
+            # Get the print output and strip leading/trailing whitespace (if there was any)
+            if parts[0].strip() != "":
+                printOutput = parts[0].strip()
+            else:
+                printOutput = "(No output)"
+
+            # Get the telemetry output and strip leading/trailing whitespace, as long as it didnt crash (which it shouldn't, im just including this for safety reasons)
+            if len(parts) > 1:
+                telemetryOutput = parts[1].strip()
+
+            # If it did crash, inform the user by setting telemetryOutput to "VM CRASHED"
+            else:
+                telemetryOutput = "VM CRASHED BEFORE TELEMETRY COULD BE PRINTED"
+            
+            # Run the show_results function with the respective return code
+            show_results(stdscr, filePath, printOutput, telemetryOutput, vmResult.returncode)
+    
+    except curses.error:
+        stdscr.clear()
+        stdscr.addstr(0, 0, "Terminal resized too small. Please restart.")
+        stdscr.refresh()
+        while True:
+            key = stdscr.getch()
+            if key in [10, 13, curses.KEY_ENTER]:
+                break
 
 # If name = main, run the curses wrapper
 if __name__ == "__main__":
