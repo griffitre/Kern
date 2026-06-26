@@ -166,6 +166,7 @@ def main():
 
     # Ensure a .krn file was passed. If not, exit
     if not passedName.endswith(".krn"):
+        print("Error: file must be a .krn file")
         sys.exit(1)
     
     # Try to open the file
