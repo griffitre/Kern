@@ -1,7 +1,7 @@
 ; Calculates the first 13 fibonacci numbers (F_0 -> F_13), printing each one
 ; Ive tried to comment these examples as thoroughly as possible to make them easy to follow,
 ; even for someone unfamiliar with stack-based assembly/coding concepts as a whole (which is why theres literally a 1:1 line-to-comment ratio)
-; If youre lost at any point, isa.md is a very good place to read more about how each thing works, so id suggest going there first
+; If youre lost at any point, isa.md is a very good place to read more about how each thing works, so Id suggest going there first
 
 PUSH    0           ; push the zeroth fibonacci number onto the stack
 STORE   0           ; store it to the first address
