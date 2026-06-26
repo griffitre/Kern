@@ -28,6 +28,7 @@ int vm_run(uint8_t *bytecode, long size){
 
         // Do a bounds check on pc immediately. If it is out of bounds (only possible if no bytecode was given), return KERN_ERR_OOB_PC
         if (pc >= size){
+            telemetry_store_pc(pc);
             return KERN_ERR_OOB_PC;
         }
 
@@ -49,6 +50,7 @@ int vm_run(uint8_t *bytecode, long size){
 
                 // Push the value
                 if (stack_push((int)passedParameter) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKOVERFLOW;
                 }
 
@@ -60,6 +62,7 @@ int vm_run(uint8_t *bytecode, long size){
             case OP_POP:
                 // Just pop the top of the stack
                 if (stack_pop(NULL) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKUNDERFLOW;
                 }
 
@@ -71,11 +74,13 @@ int vm_run(uint8_t *bytecode, long size){
             case OP_ADD:
                 // Get the two values from the top of the stack
                 if (stack_pop(&value1) < 0 || stack_pop(&value2) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKUNDERFLOW;
                 }
 
                 // Push the sum of the values
                 if (stack_push(value1 + value2) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKOVERFLOW;
                 }
 
@@ -87,11 +92,13 @@ int vm_run(uint8_t *bytecode, long size){
             case OP_SUB:
                 // Get the two values from the top of the stack
                 if (stack_pop(&value1) < 0 || stack_pop(&value2) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKUNDERFLOW;
                 }
                 
                 // Push the difference between them (by doing value2 - value1)
                 if (stack_push(value2 - value1) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKOVERFLOW;
                 }
 
@@ -103,11 +110,13 @@ int vm_run(uint8_t *bytecode, long size){
             case OP_MUL:
                 // Get the two values from the top of the stack
                 if (stack_pop(&value1) < 0 || stack_pop(&value2) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKUNDERFLOW;
                 }
 
                 // Push their product
                 if (stack_push(value1 * value2) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKOVERFLOW;
                 }
 
@@ -119,16 +128,19 @@ int vm_run(uint8_t *bytecode, long size){
             case OP_DIV:
                 // Get the two values from the top of the stack
                 if (stack_pop(&value1) < 0 || stack_pop(&value2) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKUNDERFLOW;
                 }
 
                 // Check if the first value is zero and return KERN_ERR_DIV_ZERO if it is
                 if (value1 == 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_DIV_ZERO;
                 }
 
                 // Push their quotient (by doing value2 / value1)
                 if (stack_push(value2 / value1) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKOVERFLOW;
                 }
 
@@ -140,6 +152,7 @@ int vm_run(uint8_t *bytecode, long size){
             case OP_STORE:
                 // Get the value from the top of the stack
                 if (stack_pop(&value1) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKUNDERFLOW;
                 }
 
@@ -151,6 +164,7 @@ int vm_run(uint8_t *bytecode, long size){
 
                 // Store the value to the address
                 if (memory_store((int)passedParameter, (uint8_t)value1) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_OOB_MEMORY;
                 }
 
@@ -168,11 +182,13 @@ int vm_run(uint8_t *bytecode, long size){
 
                 // Load the value from the address
                 if (memory_load((int)passedParameter, &loadedValue) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_OOB_MEMORY;
                 }
 
                 // Push the value onto the stack
                 if (stack_push((int)loadedValue) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKOVERFLOW;
                 }
 
@@ -190,6 +206,7 @@ int vm_run(uint8_t *bytecode, long size){
 
                 // Check if the value passed is out of bounds
                 if ((int)passedParameter >= size){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_OOB_PC;
                 }
 
@@ -204,6 +221,7 @@ int vm_run(uint8_t *bytecode, long size){
             case OP_JMP_IF_ZERO:
                 // Pop the top of the stack
                 if (stack_pop(&value1) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKUNDERFLOW;
                 }
 
@@ -218,6 +236,7 @@ int vm_run(uint8_t *bytecode, long size){
 
                     // Check if the value passed is out of bounds
                     if ((int)passedParameter >= size){
+                        telemetry_store_pc(pc);
                         return KERN_ERR_OOB_PC;
                     }
 
@@ -232,6 +251,7 @@ int vm_run(uint8_t *bytecode, long size){
             case OP_PRINT:
                 // Pop the top of the stack
                 if (stack_pop(&value1) < 0){
+                    telemetry_store_pc(pc);
                     return KERN_ERR_STACKUNDERFLOW;
                 }
 
@@ -251,6 +271,7 @@ int vm_run(uint8_t *bytecode, long size){
             
             // Default for invalid opcode. Return KERN_ERR_INVALID_OPCODE
             default:
+                telemetry_store_pc(pc);
                 return KERN_ERR_INVALID_OPCODE;
 
         }
