@@ -40,4 +40,4 @@ vm/obj/testMain.o: vm/tests/testMain.c
 
 # Command to remove all object files and executables
 clean:
-	rm -f vm/obj/* vm/bin/*
+	rm -f vm/obj/* vm/bin/* examples/*.bin
