@@ -1,0 +1,34 @@
+; Calculates the first 13 fibonacci numbers (F_0 -> F_13), printing each one
+; Ive tried to comment these examples as thoroughly as possible to make them easy to follow,
+; even for someone unfamiliar with stack-based assembly/coding concepts as a whole (which is why theres literally a 1:1 line-to-comment ratio)
+; If youre lost at any point, isa.md is a very good place to read more about how each thing works, so id suggest going there first
+
+PUSH    0           ; push the zeroth fibonacci number onto the stack
+STORE   0           ; store it to the first address
+
+PUSH    1           ; push the first fibonacci number onto the stack
+STORE   1           ; store it to the second address
+
+loop:               ; create a loop label
+LOAD    0           ; load the value at the first address onto the stack (literally just to print it)
+PRINT               ; print the value     
+LOAD    1           ; load the value at the second address onto the stack
+LOAD    0           ; load the value at the first address onto the stack
+LOAD    1           ; load the value at the second address onto the stack
+ADD                 ; add the two top items on the stack together, with the one at the bottom being untouched
+                    ; after the ADD instruction, the stack should look like [F_n, F_n+1]
+                    ; so, just store the items to their respective address: F_n to the first address, F_n+1 to the second
+STORE   1           ; store F_n+1
+STORE   0           ; store F_n
+
+PUSH    233         ; load the 13th fibbonacci number onto the stack
+LOAD    1           ; load F_n+1 that was just calculated onto the stack
+SUB                 ; calculate the difference
+JMP_IF_ZERO end     ; if the difference is zero, then that means the loop is done, so jump to the end label
+
+JMP     loop        ; otherwise, just loop again
+
+end:                ; create an end label
+LOAD    1           ; load the last fibonacci stored at the second address (also literally just to print it)
+PRINT               ; print it
+HALT                ; halt to end to the program
