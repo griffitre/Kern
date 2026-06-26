@@ -14,6 +14,9 @@ def enterSubmit(key):
 # Helper function to clear the screen and draw the results
 def show_results(stdscr, filePath, printOutput, telemetryOutput, returnCode):
 
+    # Parse the telemetry
+    cycles, elapsed, stackDepth, stackContents, pc, ramDump = parse_telemetry(telemetryOutput)
+
     # Clear the screen
     stdscr.clear()
 
@@ -33,6 +36,38 @@ def show_results(stdscr, filePath, printOutput, telemetryOutput, returnCode):
 
     # Refresh the screen
     stdscr.refresh()
+
+# Helper function to parse the telemetry output
+def parse_telemetry(telemetryOutput):
+
+    # Split the lines
+    lines = telemetryOutput.split("\n")
+
+    # Declare the stats
+    cycles = ""
+    elapsed = ""
+    stackDepth = ""
+    stackContents = ""
+    pc = ""
+    ramDump = []
+
+    # Go through the split lines and assign each stat their respective value
+    for line in lines:
+        if line.startswith("Number of cycles:"):
+            cycles = line
+        elif line.startswith("Elapsed time:"):
+            elapsed = line
+        elif line.startswith("Stack depth:"):
+            stackDepth = line
+        elif line.startswith("Stack contents:"):
+            stackContents = line
+        elif line.startswith("Final program counter:"):
+            pc = line
+        elif line.startswith("0x"):
+            ramDump.append(line)
+    
+    # Return all the stats
+    return cycles, elapsed, stackDepth, stackContents, pc, ramDump
 
 # Main
 def main(stdscr):
