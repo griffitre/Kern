@@ -2,3 +2,4 @@ vm/bin/
 vm/obj/
 .vs
 .vscode
+__pycache__
