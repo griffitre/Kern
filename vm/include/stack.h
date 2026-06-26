@@ -14,5 +14,8 @@ int stack_pop(int *out);
 // stack_depth
 int stack_depth();
 
+// stack_get
+int stack_get(int index);
+
 // End definition
 #endif

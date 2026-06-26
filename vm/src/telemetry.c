@@ -53,6 +53,22 @@ void telemetry_print(){
     int sDepth = stack_depth();
     printf("Stack depth: %d\n", sDepth);
 
+    // Print the contents of the stack, if applicable
+    printf("Stack contents: ");
+    if (sDepth == 0){
+        printf("[(Empty)]\n");
+    }
+    else{
+        printf("[");
+        for (int i = 0; i < sDepth; i++){
+            printf("%d", stack_get(i));
+            if (i < sDepth - 1){
+                printf(", ");
+            }
+        }
+        printf("]\n");
+    }
+
     // Print the final pc value
     printf("Final program counter value: %d\n", finalPc);
 

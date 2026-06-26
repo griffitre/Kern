@@ -61,3 +61,11 @@ int stack_depth(){
     return sp + 1;
 
 }
+
+// Definition of stack_get
+int stack_get(int index){
+
+    // Literally just return the item at the given index
+    return stack[index];
+
+}
