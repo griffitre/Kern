@@ -1,0 +1,23 @@
+; Calculates the factorial of 5
+
+PUSH    5           ; push 5 onto the top of the stack
+STORE   0           ; then store one of them to the first memory address
+
+LOAD    0           ; load 5 back onto the top of the stack
+
+loop:               ; create a loop label
+LOAD    0           ; load the value at the first address onto the top of the stack
+PUSH    1           ; push 1 onto the top of the stack
+SUB                 ; subtract 1 from the value that was just loaded onto the stack
+STORE   0           ; store the result to the first address
+LOAD    0           ; load it back
+
+JMP_IF_ZERO end     ; if the value is zero, jump to the end
+
+LOAD    0           ; otherwise, load it back again
+MUL                 ; multiply the item at the bottom of the stack by the item above it (as theres only two items on the stack)
+JMP     loop        ; loop back up
+
+end:                ; create an end label
+PRINT               ; print the result
+HALT                ; halt to end to the program
