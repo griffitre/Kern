@@ -162,7 +162,7 @@ def show_assembly_error(stdscr, filePath, errorMessage):
         if height >= 20 and width >= 120:
             break
         stdscr.clear()
-        stdscr.addstr(0, 0, f"Terminal too small ({width}x{height}). Please resize to at least 120 columns by 40 rows.")
+        stdscr.addstr(0, 0, f"Terminal too small ({width}x{height}). Please resize to at least 120 columns by 20 rows.")
         stdscr.refresh()
         curses.napms(500)
     
@@ -178,6 +178,50 @@ def show_assembly_error(stdscr, filePath, errorMessage):
 
     # Draw error message
     stdscr.addstr(4, 2, errorMessage)
+
+    # Draw hint
+    stdscr.addstr(6, 2, "Press enter to exit")
+
+    # Refresh screen and wait for the next keypress
+    stdscr.refresh()
+    while True:
+        key = stdscr.getch()
+        if key in [10, 13, curses.KEY_ENTER]:
+            break
+
+# Helper function to show the user that the VM executable is missing
+def show_missing_error(stdscr):
+
+    # Get terminal dimensions
+    height, width = stdscr.getmaxyx()
+
+    # Set the max window width
+    width = min(width, 120)
+
+    # Check terminal dimensions
+    while True:
+        curses.resizeterm(height, width)
+        height, width = stdscr.getmaxyx()
+        width = min(width, 120)
+        if height >= 20 and width >= 120:
+            break
+        stdscr.clear()
+        stdscr.addstr(0, 0, f"Terminal too small ({width}x{height}). Please resize to at least 120 columns by 20 rows.")
+        stdscr.refresh()
+        curses.napms(500)
+
+    # Clear the screen
+    stdscr.clear()
+
+    # Draw status line
+    stdscr.addstr(0, 0, "[ERROR] VM failed to launch")
+
+    # Draw centered title
+    title = f"-----VM ERROR-----"
+    stdscr.addstr(2, width // 2 - len(title) // 2, title)
+
+    # Draw error message
+    stdscr.addstr(4, 2, "The VM subprocess failed to launch. Please ensure you run 'make build' in the terminal before trying again.")
 
     # Draw hint
     stdscr.addstr(6, 2, "Press enter to exit")
@@ -281,7 +325,7 @@ def main(stdscr):
             if height >= 20 and width >= 120:
                 break
             stdscr.clear()
-            stdscr.addstr(0, 0, f"Terminal too small ({width}x{height}). Please resize to at least 120 columns by 40 rows.")
+            stdscr.addstr(0, 0, f"Terminal too small ({width}x{height}). Please resize to at least 120 columns by 20 rows.")
             stdscr.refresh()
             curses.napms(500)
 
@@ -311,8 +355,9 @@ def main(stdscr):
         box.edit(enterSubmit)
         filePath = box.gather().strip()
 
-        # Run the assembler
+        # Run the assembler in a try/except statement to prevent crashes
         assemblerResult = subprocess.run(["python3", "assembler/src/assembler.py", filePath], capture_output=True, text=True)
+        
 
         # Check if the assembler failed or if it succeeded
         # Failed, show the error screen
@@ -326,27 +371,31 @@ def main(stdscr):
             binPath = filePath.replace(".krn", ".bin")
 
             # Run the VM with the binPath
-            vmResult = subprocess.run(["./vm/bin/kern", binPath], capture_output=True, text=True)
+            try:
+                vmResult = subprocess.run(["./vm/bin/kern", binPath], capture_output=True, text=True)
 
-            # Split stdout into the PRINT instruction output and the telemetry output
-            parts = vmResult.stdout.split("----TELEMETRY----\n")
+                # Split stdout into the PRINT instruction output and the telemetry output
+                parts = vmResult.stdout.split("----TELEMETRY----\n")
 
-            # Get the print output and strip leading/trailing whitespace (if there was any)
-            if parts[0].strip() != "":
-                printOutput = parts[0].strip()
-            else:
-                printOutput = "(No output)"
+                # Get the print output and strip leading/trailing whitespace (if there was any)
+                if parts[0].strip() != "":
+                    printOutput = parts[0].strip()
+                else:
+                    printOutput = "(No output)"
 
-            # Get the telemetry output and strip leading/trailing whitespace, as long as it didnt crash (which it shouldn't, im just including this for safety reasons)
-            if len(parts) > 1:
-                telemetryOutput = parts[1].strip()
+                # Get the telemetry output and strip leading/trailing whitespace, as long as it didnt crash (which it shouldn't, im just including this for safety reasons)
+                if len(parts) > 1:
+                    telemetryOutput = parts[1].strip()
 
-            # If it did crash, inform the user by setting telemetryOutput to "VM CRASHED"
-            else:
-                telemetryOutput = "VM CRASHED BEFORE TELEMETRY COULD BE PRINTED"
+                # If it did crash, inform the user by setting telemetryOutput to "VM CRASHED"
+                else:
+                    telemetryOutput = "VM CRASHED BEFORE TELEMETRY COULD BE PRINTED"
+                
+                # Run the show_results function with the respective return code
+                show_results(stdscr, filePath, printOutput, telemetryOutput, vmResult.returncode)
             
-            # Run the show_results function with the respective return code
-            show_results(stdscr, filePath, printOutput, telemetryOutput, vmResult.returncode)
+            except FileNotFoundError:
+                show_missing_error(stdscr)
     
     except curses.error:
         stdscr.clear()
