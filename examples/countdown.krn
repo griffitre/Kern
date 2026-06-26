@@ -1,0 +1,22 @@
+; Simply counts down from 10 to 0, printing each step
+
+PUSH    10          ; push 10 onto the stack
+STORE   0           ; store it to the first address
+
+loop:               ; create a loop label
+LOAD    0           ; load the value at the first address back onto the stack
+LOAD    0           ; load the value at the first address again
+PRINT               ; print the value loaded onto the stack
+PUSH    1           ; push 1 onto the stack
+SUB                 ; subtract 1 from the value loaded onto the stack
+STORE   0           ; store the value to the first address
+LOAD    0           ; load it back
+
+JMP_IF_ZERO end     ; if the value is zero, jump to the end
+
+JMP     loop        ; otherwise, loop again
+
+end:                ; create an end label
+LOAD    0           ; load the value at the first address
+PRINT               ; print it (should be 0)
+HALT                ; halt to end to the program
