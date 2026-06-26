@@ -11,6 +11,29 @@ def enterSubmit(key):
         return 7
     return key
 
+# Helper function to clear the screen and draw the results
+def show_results(stdscr, filePath, printOutput, telemetryOutput, returnCode):
+
+    # Clear the screen
+    stdscr.clear()
+
+    # Get terminal dimensions
+    height, width = stdscr.getmaxyx()
+
+    # Draw the status line at the top. If completed, inform the user, if failed, also inform the user (unsurprisingly)
+    if returnCode == 0:
+        status = "[SUCCESS] Execution completed successfully"
+    else:
+        status = "[FAILED] Execution failed"
+    stdscr.addstr(0, 0, status)
+
+    # Draw the centered title
+    title = f"-----OVERVIEW OF EXECUTION OF {filePath}-----"
+    stdscr.addstr(2, width // - len(title) // 2, title)
+
+    # Refresh the screen
+    stdscr.refresh()
+
 # Main
 def main(stdscr):
 
