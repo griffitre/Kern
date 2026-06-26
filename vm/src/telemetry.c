@@ -43,6 +43,9 @@ void telemetry_print(){
     // Convert it to a double
     double elapsedConverted = (double)elapsedTime / CLOCKS_PER_SEC;
 
+    // Inform the user that what is being printed is the telemetry
+    printf("\n----TELEMETRY----\n");
+
     // Print the number of cycles
     printf("Number of cycles: %d\n", cycles);
 
