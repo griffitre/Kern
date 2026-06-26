@@ -244,7 +244,8 @@ int vm_run(uint8_t *bytecode, long size){
             
             // Halt operation
             case OP_HALT:
-                // Simply return KERN_OK
+                // Run telemetry_set_pc and return KERN_OK
+                telemetry_store_pc(pc);
                 return KERN_OK;
 
             

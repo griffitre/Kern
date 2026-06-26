@@ -10,6 +10,9 @@ static int cycles;
 // Clock to store the start time
 static clock_t startTime;
 
+// Int to store the final pc value
+static int finalPc;
+
 // Definition of telemetry_init
 void telemetry_init(){
 
@@ -50,8 +53,19 @@ void telemetry_print(){
     int sDepth = stack_depth();
     printf("Stack depth: %d\n", sDepth);
 
+    // Print the final pc value
+    printf("Final program counter value: %d\n", finalPc);
+
     // Call memory_dump to dump the ram, then print a new line right after
     memory_dump();
     printf("\n");
+
+}
+
+// Definition of telemetry_store_pc
+void telemetry_store_pc(int pc){
+    
+    // Just set the finalPc int
+    finalPc = pc;
 
 }
