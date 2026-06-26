@@ -1,4 +1,4 @@
-; Calculates the first 13 fibonacci numbers (F_0 -> F_13), printing each one
+; Calculates the first 14 fibonacci numbers (F_0 -> F_13), printing each one
 ; Ive tried to comment these examples as thoroughly as possible to make them easy to follow,
 ; even for someone unfamiliar with stack-based assembly/coding concepts as a whole (which is why theres literally a 1:1 line-to-comment ratio)
 ; If youre lost at any point, isa.md is a very good place to read more about how each thing works, so Id suggest going there first
@@ -21,7 +21,7 @@ ADD                 ; add the two top items on the stack together, with the one 
 STORE   1           ; store F_n+1
 STORE   0           ; store F_n
 
-PUSH    233         ; load the 13th fibbonacci number onto the stack
+PUSH    233         ; load the 14th fibbonacci number onto the stack
 LOAD    1           ; load F_n+1 that was just calculated onto the stack
 SUB                 ; calculate the difference
 JMP_IF_ZERO end     ; if the difference is zero, then that means the loop is done, so jump to the end label
@@ -29,6 +29,8 @@ JMP_IF_ZERO end     ; if the difference is zero, then that means the loop is don
 JMP     loop        ; otherwise, just loop again
 
 end:                ; create an end label
+LOAD    0           ; load the second last fibonacci number (which would be 144)
+PRINT               ; print it
 LOAD    1           ; load the last fibonacci stored at the second address (also literally just to print it)
 PRINT               ; print it
 HALT                ; halt to end to the program
