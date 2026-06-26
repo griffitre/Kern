@@ -25,6 +25,9 @@ def enterSubmit(key):
 # Helper function to clear the screen and draw the results
 def show_results(stdscr, filePath, printOutput, telemetryOutput, returnCode):
 
+    # Hide cursor
+    curses.curs_set(0)
+
     # Parse the telemetry
     cycles, elapsed, stackDepth, stackContents, pc, ramDump = parse_telemetry(telemetryOutput)
 
