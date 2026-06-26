@@ -4,6 +4,17 @@ import subprocess
 import sys
 import os
 
+# Dictionary mapping error codes to human readable text
+errorMessages = {
+    0: "OK",
+    1: "Stack Overflow",
+    2: "Stack Underflow", 
+    3: "Memory Out of Bounds",
+    4: "Program Counter Out of Bounds",
+    5: "Invalid Opcode",
+    6: "Divide by Zero"
+}
+
 # Function to allow hitting enter to submit text
 def enterSubmit(key):
     # If enter is hit, return 7, which is control + g, which is curses default submit key
@@ -16,6 +27,9 @@ def show_results(stdscr, filePath, printOutput, telemetryOutput, returnCode):
 
     # Parse the telemetry
     cycles, elapsed, stackDepth, stackContents, pc, ramDump = parse_telemetry(telemetryOutput)
+
+    # Set up the exit code string to display using the passed return code and the error messages dictionary
+    exitCodeStr = f"Exit code: {returnCode} ({errorMessages.get(returnCode, 'Unknown Error')})"
 
     # Get terminal dimensions
     height, width = stdscr.getmaxyx()
@@ -64,8 +78,8 @@ def show_results(stdscr, filePath, printOutput, telemetryOutput, returnCode):
     pad.addstr(4, width // 2 + width // 4 - len(stackHeader) // 2, stackHeader)
 
     # Calculate how many rows each panel needs
-    # 4 rows minimum for the machine report (3 content + 1 whitespace)
-    leftRows = 4
+    # 4 rows minimum for the machine report (4 content + 1 whitespace)
+    leftRows = 5
     # Rows for the stack header (1 content, 1 dynamically sized content, 1 whitespace)
     rightRows = len(wrappedStack) + 2
 
@@ -80,6 +94,7 @@ def show_results(stdscr, filePath, printOutput, telemetryOutput, returnCode):
     pad.addstr(5, 2, cycles)
     pad.addstr(6, 2, elapsed)
     pad.addstr(7, 2, pc)
+    pad.addstr(8, 2, exitCodeStr)
 
     # Draw stack overview fields
     pad.addstr(5, width // 2 + 2, stackDepth)
