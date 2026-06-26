@@ -1,0 +1,11 @@
+; Demonstrates an example of fault handling. In this case, I will purposely cause a divide by zero error.
+; Ive tried to comment these examples as thoroughly as possible to make them easy to follow,
+; even for someone unfamiliar with stack-based assembly/coding concepts as a whole (which is why theres literally a 1:1 line-to-comment ratio)
+; If youre lost at any point, isa.md is a very good place to read more about how each thing works, so id suggest going there first
+
+PUSH 5              ; push 5 onto the stack
+PUSH 0              ; push 0 onto the stack
+
+DIV                 ; try to divide by 0, which is obviously not allowed
+
+HALT                ; halt the program (even though the program wont ever run this line)
