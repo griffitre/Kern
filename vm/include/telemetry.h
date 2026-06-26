@@ -12,6 +12,6 @@ void telemetry_tick();
 void telemetry_print();
 
 // telemetry_store_pc
-void telemetry_store_pc();
+void telemetry_store_pc(int pc);
 
 #endif
