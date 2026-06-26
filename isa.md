@@ -43,4 +43,5 @@ On termination, whether complete or fault, the VM will print:
 - Total number of cycles executed
 - Final stack depth
 - Execution runtime
+- Final program counter value
 - Hex dump of virtual RAM
